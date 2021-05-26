@@ -1,0 +1,81 @@
+{
+    "name": "brainsum/c2distro-project",
+    "description": "Distribution for quickly starting a new c2D project",
+    "type": "drupal-profile",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "pmester",
+            "email": "pmester@brainsum.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "repositories": {
+        "drupal-8": {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        "asset-packagist": {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    },
+    "require": {
+        "php": "^7.3",
+        "ext-json": "*",
+        "ext-zip": "*",
+        "drupal/block_field": "^1.0@RC",
+        "drupal/ctools": "^3.6",
+        "drupal/easy_breadcrumb": "^1.15",
+        "drupal/exception_mailer": "^3.0@beta",
+        "drupal/field_group": "^3.1",
+        "drupal/classy_paragraphs": "^1.0@beta",
+        "drupal/metatag": "^1.16",
+        "drupal/paragraphs": "^1.12",
+        "drupal/pathauto": "^1.8",
+        "drupal/structure_sync": "^2.0",
+        "drupal/svg_image": "^1.14",
+        "drupal/token": "^1.9",
+        "drupal/transliterate_filenames": "^1.5",
+        "drupal/warmer": "^2.0",
+        "drupal/warmer_entity": "^2.0"
+    },
+    "conflict": {
+        "drupal/c2distro-project": "*"
+    },
+    "suggest": {
+        "drupal/maillog": "Allows logging outgoing emails.",
+        "drupal/exception_mailer": "Allows sending alert emails on errors and exceptions.",
+        "drupal/admin_toolbar": "Better admin toolbar.",
+        "drupal/adminimal_admin_toolbar": "Prettier theme for admin_toolbar."
+    },
+    "extra": {
+        "patches": {
+
+        },
+        "drupal-scaffold": {
+            "locations": {
+                "web-root": "web/"
+            }
+        },
+        "installer-paths": {
+            "web/core": ["type:drupal-core"],
+            "web/libraries/{$name}": [
+                "type:drupal-library",
+                "type:bower-asset",
+                "type:npm-asset"
+            ],
+            "web/modules/contrib/{$name}": ["type:drupal-module"],
+            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "web/themes/contrib/{$name}": ["type:drupal-theme"],
+            "drush/Commands/contrib/{$name}": ["type:drupal-drush"],
+            "web/modules/custom/{$name}": ["type:drupal-custom-module"],
+            "web/themes/custom/{$name}": ["type:drupal-custom-theme"]
+        },
+        "installer-types": ["bower-asset", "npm-asset"]
+    }
+}
