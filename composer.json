@@ -24,10 +24,15 @@
       "asset-packagist": {
           "type": "composer",
           "url": "https://asset-packagist.org"
+      },
+      "c2d-profile": {
+        "type": "composer",
+        "url": "https://github.com/brainsum/c2distro"
       }
   },
   "require": {
     "php": "^7.3",
+    "brainsum/c2distro": "^1.0.0",
     "composer/installers": "^1.11.0",
     "cweagans/composer-patches": "^1.7.0",
     "drupal/admin_toolbar": "^3.0.0",
