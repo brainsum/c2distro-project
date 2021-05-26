@@ -26,8 +26,8 @@
           "url": "https://asset-packagist.org"
       },
       "c2d-profile": {
-        "type": "composer",
-        "url": "https://github.com/brainsum/c2distro"
+        "type": "vcs",
+        "url": "git@github.com:brainsum/c2distro.git"
       }
   },
   "require": {
