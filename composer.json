@@ -1,6 +1,6 @@
 {
-  "name": "petya/c2d-project",
-  "description": "Template for creating c2distro IFRC project.",
+  "name": "brainsum/c2distro-project",
+  "description": "Template for creating c2distro project.",
   "type": "project",
   "license": "GPL-2.0-or-later",
   "authors": [
