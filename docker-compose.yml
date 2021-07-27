@@ -1,27 +1,31 @@
 # Development env for the projects.
 ## @see: https://github.com/wodby/docker4drupal
 
-version: "2"
+version: "3.8"
 
 services:
-  mariadb:
-    image: wodby/mariadb:10.4-3.7.1
+  db:
+    container_name: "${PROJECT_NAME}_db"
     stop_grace_period: 30s
+    image: mysql:8.0.26
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DRUPAL_DATABASE_NAME}
       MYSQL_USER: ${DRUPAL_DATABASE_USERNAME}
       MYSQL_PASSWORD: ${DRUPAL_DATABASE_PASSWORD}
-  #    volumes:
-  #      - ./mariadb-init:/docker-entrypoint-initdb.d # Place init .sql file(s) here.
-  #      - /path/to/mariadb/data/on/host:/var/lib/mysql # Use bind mount
+    restart: unless-stopped
+    command:
+      - 'mysqld'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_0900_ai_ci'
+      - '--default-authentication-plugin=mysql_native_password'
 
   php:
     # Linux| 1000:1000
     # image: brainsum/c2distro-php:7.4-dev-4.22.1
-    image: "wodby/drupal-php:7.4-dev-4.24.1"
+    image: wodby/drupal-php:7.4-dev-4.25.0
     #    # Mac| 501:20
-    #    image: wodby/drupal-php:7.3-dev-macos-4.14.3
+    #    image: wodby/drupal-php:7.4-dev-macos-4.25.0
     environment:
       DRUPAL_DATABASE_HOST: ${DRUPAL_DATABASE_HOST}
       DRUPAL_DATABASE_PORT: ${DRUPAL_DATABASE_PORT}
@@ -53,9 +57,8 @@ services:
     #      SIMPLETEST_BASE_URL: "http://nginx"
     #      SIMPLETEST_DB: "mysql://drupal:drupal@mariadb/drupal#tests_"
     #      MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu","--headless"]}}, "http://chrome:9515"]'
-
     volumes:
-      - ./:/var/www/html
+      - ./app:/var/www/html
   ## For macOS users (https://wodby.com/docs/stacks/drupal/local#docker-for-mac)
   #      - ./:/var/www/html:cached # User-guided caching
   #      - docker-sync:/var/www/html # Docker-sync
@@ -63,7 +66,7 @@ services:
   #      - files:/mnt/files
 
   nginx:
-    image: wodby/nginx:1.19-5.13.2
+    image: wodby/nginx:1.20-5.15.0
     depends_on:
       - php
     environment:
@@ -77,7 +80,7 @@ services:
       ##
     #      NGINX_DRUPAL_FILE_PROXY_URL: http://example.com
     volumes:
-      - ./:/var/www/html
+      - ./app:/var/www/html
     # For macOS users (https://wodby.com/docs/stacks/drupal/local#docker-for-mac)
     #      - ./:/var/www/html:cached # User-guided caching
     #      - docker-sync:/var/www/html # Docker-sync
@@ -91,7 +94,7 @@ services:
       - "traefik.http.routers.${PROJECT_NAME}_mailhog.rule=Host(`mailhog.${PROJECT_BASE_URL}`)"
 
   traefik:
-    image: library/traefik:v2.3.2
+    image: traefik:v2.4.12
     command: --api.insecure=true --providers.docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

@@ -1,6 +1,6 @@
 # c2distro - Composer template
 
-Composer template to kickstart Digital Assets Management projects.
+Composer template to kickstart C2 projects.
 
 This template was based on the following:
 
