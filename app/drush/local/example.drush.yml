@@ -1,0 +1,7 @@
+command:
+  sql:
+    dump:
+      options:
+        # Required for the current DB/User locally.
+        extra-dump: '--no-tablespaces'
+        skip-tables-list: 'key_value_expire,cache_bootstrap,cache_config,cache_container,cache_data,cache_default,cache_discovery,cache_discovery_migration,cache_dynamic_page_cache,cache_entity,cache_jsonapi_normalizations,cache_menu,cache_migrate,cache_page,cache_render,cache_toolbar,cachetags'

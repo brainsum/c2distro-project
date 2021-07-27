@@ -12,4 +12,4 @@ vendor
 
 docker-compose.local.yml
 
-composer.lock
+/composer.lock
