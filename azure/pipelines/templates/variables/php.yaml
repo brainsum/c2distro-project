@@ -1,0 +1,13 @@
+variables:
+  - group: common
+  - name: phpBaseImageRepository
+    value: 'library/php'
+    # @todo: experiment with 8.0.8
+  - name: phpBaseTag
+    value: '7.4.21-fpm-buster'
+  - name: phpImageRepository
+    value: 'c2/php'
+  - name: phpContextPath
+    value: '$(Build.SourcesDirectory)/docker/php'
+  - name: phpDockerfilePath
+    value: '$(phpContextPath)/Dockerfile'

@@ -1,0 +1,268 @@
+stages:
+  - stage: build_and_push
+    displayName: 'Build and push Drupal'
+    jobs:
+      - job: nginx_base_build_and_push
+        displayName: Build and push Nginx base image
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            name: acr_login
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: pull_nginx_base_image
+            displayName: 'Try pulling the Nginx base image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(nginxBaseImageRepository):$(nginxBaseTag)'
+          - task: Bash@3
+            name: pull_nginx_base_latest_image
+            displayName: 'Try pulling the Nginx base latest image.'
+            continueOnError: true
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(nginxImageRepository):$(latestTag)-base'
+          - task: Docker@2
+            name: nginx_base_image_build
+            displayName: Build the Nginx base image.
+            inputs:
+              command: build
+              repository: $(nginxImageRepository)
+              dockerFile: $(nginxDockerfilePath)
+              buildContext: $(nginxContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BASE_IMAGE=$(nginxBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(nginxBaseTag)
+                --build-arg SOURCE_CODE_IMAGE=$(containerRegistry)/$(drupalImageRepository)
+                --build-arg SOURCE_CODE_IMAGE_TAG=$(currentTag)
+                --target "base"
+                --label nginx_version=$(nginxBaseTag)
+                --cache-from $(containerRegistry)/$(nginxImageRepository):$(latestTag)-base
+              tags: |
+                $(currentTag)-base
+                $(latestTag)-base
+          - task: Docker@2
+            name: nginx_base_image_push
+            displayName: Push the Nginx base image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(nginxImageRepository)
+              dockerFile: $(nginxDockerfilePath)
+              tags: |
+                $(currentTag)-base
+                $(latestTag)-base
+          - task: Docker@2
+            name: acr_logout
+            displayName: Logout from ACR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          # @todo: Artifact?
+      - job: drupal_build_and_push
+        displayName: Build and push Drupal images
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            name: acr_login
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: pull_builder_image
+            displayName: 'Try pulling the builder image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(drupalBuilderImageRepository):$(latestTag)'
+          - task: Bash@3
+            name: pull_drupal_base_image
+            displayName: 'Try pulling the drupal base image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(drupalBaseImageRepository):$(latestTag)'
+          - task: Bash@3
+            name: pull_drupal_image
+            displayName: 'Try pulling the latest Drupal image.'
+            continueOnError: true
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(drupalImageRepository):$(latestTag)'
+          - task: Docker@2
+            name: drupal_image_build
+            displayName: Build the Drupal image.
+            inputs:
+              command: build
+              repository: $(drupalImageRepository)
+              dockerFile: $(drupalDockerfilePath)
+              buildContext: $(drupalContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BUILDER_IMAGE=$(containerRegistry)/$(drupalBuilderImageRepository)
+                --build-arg BUILDER_IMAGE_TAG=$(latestTag)
+                --build-arg BASE_IMAGE=$(containerRegistry)/$(drupalBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(latestTag)
+                --target "prod"
+                --cache-from $(containerRegistry)/$(drupalBuilderImageRepository):$(latestTag)
+                --cache-from $(containerRegistry)/$(drupalBaseImageRepository):$(latestTag)
+                --cache-from $(containerRegistry)/$(drupalImageRepository):$(latestTag)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: drupal_image_push
+            displayName: Push the Drupal image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(drupalImageRepository)
+              dockerFile: $(drupalDockerfilePath)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: acr_logout
+            displayName: Logout from ACR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: prepare_drupal_build_artifact
+            displayName: Prepare drupal artifact
+            inputs:
+              targetType: 'inline'
+              script: 'echo "Dummytext" > ${TARGET_DIR}/drupal_image_build_artifact.txt'
+            env:
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_artifact
+            displayName: Publish build artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drupal_image_build_artifact'
+              publishLocation: 'Container'
+      - job: nginx_build_and_push
+        dependsOn:
+          - nginx_base_build_and_push
+          - drupal_build_and_push
+        displayName: Build and push Nginx images
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            name: acr_login
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: pull_nginx_base_image
+            displayName: 'Try pulling the Nginx base image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(nginxBaseImageRepository):$(nginxBaseTag)'
+          - task: Bash@3
+            name: pull_nginx_base_latest_image
+            displayName: 'Try pulling the Nginx base latest image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(nginxImageRepository):$(currentTag)-base'
+          - task: Bash@3
+            name: pull_nginx_latest_image
+            displayName: 'Try pulling the Nginx latest image.'
+            continueOnError: true
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(nginxImageRepository):$(latestTag)'
+          - task: Bash@3
+            name: pull_drupal_image
+            displayName: 'Try pulling the current Drupal image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(drupalImageRepository):$(currentTag)'
+          - task: Docker@2
+            name: nginx_image_build
+            displayName: Build the Nginx image.
+            inputs:
+              command: build
+              repository: $(nginxImageRepository)
+              dockerFile: $(nginxDockerfilePath)
+              buildContext: $(nginxContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BASE_IMAGE=$(nginxBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(nginxBaseTag)
+                --build-arg SOURCE_CODE_IMAGE=$(containerRegistry)/$(drupalImageRepository)
+                --build-arg SOURCE_CODE_IMAGE_TAG=$(currentTag)
+                --target "prod"
+                --cache-from $(containerRegistry)/$(drupalImageRepository):$(currentTag)
+                --cache-from $(containerRegistry)/$(nginxImageRepository):$(currentTag)-base
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: nginx_image_push
+            displayName: Push the Nginx image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(nginxImageRepository)
+              dockerFile: $(nginxDockerfilePath)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: acr_logout
+            displayName: Logout from ACR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: prepare_nginx_build_artifact
+            displayName: Prepare nginx artifact
+            inputs:
+              targetType: 'inline'
+              script: 'echo "Dummytext" > ${TARGET_DIR}/nginx_image_build_artifact.txt'
+            env:
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_artifact
+            displayName: Publish nginx build artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'nginx_image_build_artifact'
+              publishLocation: 'Container'
+      - job: publish_generic_artifact
+        dependsOn:
+          - nginx_build_and_push
+        displayName: Publish a generic artifact
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Bash@3
+            name: prepare_generic_build_artifact
+            displayName: Prepare generic artifact
+            inputs:
+              targetType: 'inline'
+              script: |
+                cd "${SOURCE_DIR}/helm"
+                find values -maxdepth 2 -name '*.yaml' -exec cp --parents {} "${TARGET_DIR}" \;
+            env:
+              SOURCE_DIR: $(Build.SourcesDirectory)
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_generic_build_artifact
+            displayName: Publish generic artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'generic_build_artifact'
+              publishLocation: 'Container'

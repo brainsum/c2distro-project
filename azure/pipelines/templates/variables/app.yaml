@@ -1,0 +1,24 @@
+# @todo: Is there a way to make this work properly for tags?
+# $(resources.pipeline.php_image.runID) is ok when triggered by a pipeline, but won't work for git trigger.
+variables:
+  - group: common
+  - name: drupalBaseImageRepository
+    value: 'c2/php'
+  - name: drupalBuilderImageRepository
+    value: 'c2/builder'
+  - name: drupalImageRepository
+    value: 'c2/drupal'
+  - name: drupalContextPath
+    value: '$(Build.SourcesDirectory)/app'
+  - name: drupalDockerfilePath
+    value: '$(Build.SourcesDirectory)/docker/drupal/Dockerfile'
+  - name: nginxImageRepository
+    value: 'c2/nginx'
+  - name: nginxBaseImageRepository
+    value: wodby/nginx
+  - name: nginxBaseTag
+    value: 1.20-5.15.0
+  - name: nginxContextPath
+    value: '$(Build.SourcesDirectory)/docker/nginx'
+  - name: nginxDockerfilePath
+    value: '$(nginxContextPath)/Dockerfile'

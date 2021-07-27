@@ -1,0 +1,76 @@
+stages:
+  - stage: build_and_push_php
+    displayName: 'Build and push PHP'
+    jobs:
+      - job: php_build_and_push
+        displayName: Build and push
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            name: acr_login
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: pull_base_image
+            displayName: 'Try pulling the base image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(phpBaseImageRepository):$(phpBaseTag)'
+          - task: Bash@3
+            name: pull_existing_image
+            displayName: 'Try pulling the latest image.'
+            continueOnError: true
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(phpImageRepository):$(latestTag)'
+          - task: Docker@2
+            name: image_build
+            displayName: Build the image.
+            inputs:
+              command: build
+              repository: $(phpImageRepository)
+              dockerFile: $(phpDockerfilePath)
+              buildContext: $(phpContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BASE_IMAGE=$(phpBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(phpBaseTag)
+                --label php_version=$(phpBaseTag)
+                --cache-from $(containerRegistry)/$(phpImageRepository):$(latestTag)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: image_push
+            displayName: Push the image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(phpImageRepository)
+              dockerFile: $(phpDockerfilePath)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: acr_logout
+            displayName: Logout from ACR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'echo "Dummytext" > ${TARGET_DIR}/dummy.txt'
+            env:
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_artifact
+            displayName: Publish build artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'php_image_build_artifact'
+              publishLocation: 'Container'

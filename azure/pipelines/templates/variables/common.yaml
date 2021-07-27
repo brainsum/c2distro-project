@@ -1,0 +1,10 @@
+variables:
+  - group: common
+  - name: DOCKER_BUILDKIT
+    value: 1
+  - name: vmImageName
+    value: ubuntu-20.04
+  - name: currentTag
+    value: '$(Build.SourceBranchName)-$(Build.BuildId)'
+  - name: latestTag
+    value: '$(Build.SourceBranchName)-latest'

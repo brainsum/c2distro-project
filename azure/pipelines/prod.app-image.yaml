@@ -1,0 +1,36 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - prod
+  tags:
+    include:
+      - Release-*
+  paths:
+    include:
+      - app
+      - docker/nginx
+      - azure/pipelines/prod.app-image.yaml
+      - azure/pipelines/templates/stages/app.yaml
+      - azure/pipelines/templates/variables/app.yaml
+      - azure/pipelines/templates/variables/common.yaml
+
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: "prod_builder_image"
+      source: "Builder Image (Prod)"
+      trigger:
+        branches:
+          include:
+            - prod
+  repositories:
+    - repository: self
+
+variables:
+  - template: templates/variables/common.yaml
+  - template: templates/variables/app.yaml
+
+stages:
+  - template: templates/stages/app.yaml

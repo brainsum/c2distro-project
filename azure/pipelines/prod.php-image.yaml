@@ -1,0 +1,30 @@
+# Pipeline for building base images not depending on the app source code.
+# @todo: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/resources?view=azure-devops&tabs=schema
+# @note: https://dev.azure.com/<org>/<repo>/_settings/settings / pipelines / settings / Publish metadata from pipelines (preview)
+resources:
+  - repo: self
+
+pr: none
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - prod
+  tags:
+    include:
+      - Release-*
+  paths:
+    include:
+      - docker/php
+      - azure/pipelines/prod.php-image.yaml
+      - azure/pipelines/templates/stages/php.yaml
+      - azure/pipelines/templates/variables/php.yaml
+      - azure/pipelines/templates/variables/common.yaml
+
+variables:
+  - template: templates/variables/common.yaml
+  - template: templates/variables/php.yaml
+
+stages:
+  - template: templates/stages/php.yaml

@@ -1,0 +1,16 @@
+variables:
+  - group: common
+  - name: builderBaseImageRepository
+    value: 'c2/php'
+  - name: builderImageRepository
+    value: 'c2/builder'
+  - name: nodeVersion
+    value: '14.16.0'
+  - name: composerVersion
+    value: '2.0.15'
+  - name: nodeImageRepository
+    value: 'c2/node'
+  - name: builderContextPath
+    value: '$(Build.SourcesDirectory)/docker/builder'
+  - name: dockerfilePath
+    value: '$(builderContextPath)/Dockerfile'

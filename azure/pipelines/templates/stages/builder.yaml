@@ -1,0 +1,112 @@
+stages:
+  - stage: build_and_push_builder
+    displayName: 'Build and push Builder and Node images'
+    jobs:
+      - job: php_build_and_push
+        displayName: Build and push
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            name: acr_login
+            displayName: Login to ACR
+            inputs:
+              command: login
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            name: pull_base_image
+            displayName: 'Try pulling the base image.'
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(builderBaseImageRepository):$(latestTag)'
+          - task: Bash@3
+            name: pull_existing_builder_image
+            displayName: 'Try pulling the latest builder image.'
+            continueOnError: true
+            inputs:
+              targetType: 'inline'
+              script: 'docker pull $(containerRegistry)/$(builderImageRepository):$(latestTag)'
+          - task: Docker@2
+            name: builder_image_build
+            displayName: Build the builder image.
+            inputs:
+              command: build
+              repository: $(builderImageRepository)
+              dockerFile: $(dockerfilePath)
+              buildContext: $(builderContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BASE_IMAGE=$(containerRegistry)/$(builderBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(latestTag)
+                --build-arg NODE_VERSION=$(nodeVersion)
+                --build-arg COMPOSER_VERSION="$(composerVersion)"
+                --target "php-node-base"
+                --label composer_version=$(composerVersion)
+                --label node_version=$(nodeVersion)
+                --cache-from $(containerRegistry)/$(builderImageRepository):$(latestTag)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: builder_image_push
+            displayName: Push the builder image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(builderImageRepository)
+              dockerFile: $(dockerfilePath)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: node_image_build
+            displayName: Build the node image.
+            inputs:
+              command: build
+              repository: $(nodeImageRepository)
+              dockerFile: $(dockerfilePath)
+              buildContext: $(builderContextPath)
+              arguments: |
+                --build-arg BUILDKIT_INLINE_CACHE=1
+                --build-arg BASE_IMAGE=$(containerRegistry)/$(builderBaseImageRepository)
+                --build-arg BASE_IMAGE_TAG=$(latestTag)
+                --build-arg NODE_VERSION=$(nodeVersion)
+                --build-arg COMPOSER_VERSION="$(composerVersion)"
+                --target "node"
+                --label composer_version=$(composerVersion)
+                --label node_version=$(nodeVersion)
+                --cache-from $(containerRegistry)/$(builderImageRepository):$(currentTag)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: node_image_push
+            displayName: Push the node image.
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(nodeImageRepository)
+              dockerFile: $(dockerfilePath)
+              tags: |
+                $(currentTag)
+                $(latestTag)
+          - task: Docker@2
+            name: acr_logout
+            displayName: Logout from ACR
+            condition: always()
+            inputs:
+              command: logout
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'echo "Dummytext" > ${TARGET_DIR}/builder_image_build_artifact.txt'
+            env:
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_artifact
+            displayName: Publish build artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'builder_image_build_artifact'
+              publishLocation: 'Container'

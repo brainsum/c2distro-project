@@ -1,0 +1,36 @@
+# @note: Goal of this - build the builder image when docker/builder gets updated or the php image gets rebuilt.
+trigger:
+  batch: true
+  branches:
+    include:
+      - prod
+  tags:
+    include:
+      - Release-*
+  paths:
+    include:
+      - docker/builder
+      - azure/pipelines/prod.builder-image.yaml
+      - azure/pipelines/templates/stages/builder.yaml
+      - azure/pipelines/templates/variables/builder.yaml
+      - azure/pipelines/templates/variables/common.yaml
+
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: "prod_php_image"
+      source: "PHP Image (Prod)"
+      trigger:
+        branches:
+          include:
+            - prod
+  repositories:
+    - repository: self
+
+variables:
+  - template: templates/variables/common.yaml
+  - template: templates/variables/builder.yaml
+
+stages:
+  - template: templates/stages/builder.yaml
