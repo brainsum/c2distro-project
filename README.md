@@ -26,6 +26,11 @@ composer create-project brainsum/c2distro-project --stability=dev my-c2distro-pr
 
 ## Setup
 
+### App
+
+Drupal itself is in the `app` folder, you need to use `composer install` there, too.
+Note, when using the supplied docker stack, on `app` is mounted in the container.
+
 ### Environment variables
 
 By default, the project depends on some environment variables. See the [settings.php scaffold file](./composer/c2distro/assets/default.settings.php) as well the files in the [settings folder](./settings).
@@ -38,7 +43,7 @@ For starting and stopping the environment you can use the helper scripts provide
 
 ### Drush
 
-Copy `drush/example.drush.yml` as `drush/drush.yml`. Update its contents as required.
+Copy `app/drush/local/example.drush.yml` as `app/drush/local/drush.yml`. Update its contents as required.
 
 ### Filesystem permission fixes
 
