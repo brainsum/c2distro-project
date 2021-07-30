@@ -3,6 +3,10 @@
 SCRIPT=$(readlink -f "$0")
 SCRIPT_DIR=$(dirname "$SCRIPT")
 
+ACR=$(realpath "${SCRIPT_DIR}/../acr.env")
+# shellcheck source=../variables.env
+source "${ACR}"
+
 VARIABLES=$(realpath "${SCRIPT_DIR}/../variables.env")
 # shellcheck source=../variables.env
 source "${VARIABLES}"
