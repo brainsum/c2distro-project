@@ -23,7 +23,7 @@ grumphp:
       max_body_width: 72
       max_subject_width: 60
       matchers:
-        - ['/^((SLW\-)(\d+ ))+\| [A-Za-z\d\s\.]+([^.])+\.{1}$/s']
+        - ['/^((C2D\-)(\d+ ))+\| [A-Za-z\d\s\.]+([^.])+\.{1}$/s']
       case_insensitive: false
       multiline: true
       additional_modifiers: ''
