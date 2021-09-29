@@ -1,7 +1,7 @@
 grumphp:
   ascii:
     failed: vendor/phpro/grumphp/resources/ascii/failed.txt
-    succeeded: vendor/phpro/grumphp/resource/ascii/succeded.txt
+    succeeded: vendor/phpro/grumphp/resources/ascii/succeeded.txt
   environment:
     variables:
       GRUMPHP_PROJECT_DIR: "."
@@ -23,7 +23,7 @@ grumphp:
       max_body_width: 72
       max_subject_width: 60
       matchers:
-        - ['/^((C2D\-)(\d+ ))+\| [A-Za-z\d\s\.]+([^.])+\.{1}$/s']
+        Must contain JIRA issue number: '/^((C2D\-)(\d+ ))+\| [A-Za-z\d\s\.]+([^.])+\.{1}$/s'
       case_insensitive: false
       multiline: true
       additional_modifiers: ''
