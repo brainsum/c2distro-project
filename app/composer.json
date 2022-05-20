@@ -31,6 +31,7 @@
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "dmore/chrome-mink-driver": "^2.8",
         "drupal-composer/drupal-security-advisories": "8.x-dev",
         "drupal/console": "^1.9.7",
         "drupal/core-dev": "^9.3",
@@ -39,7 +40,8 @@
         "drupal/devel_php": "^1.3.0",
         "metadrop/grumphp-drupal-check": "^0.3.0 || ^0.2.0",
         "roave/security-advisories": "dev-latest",
-        "sebastian/phpcpd": "^6.0"
+        "sebastian/phpcpd": "^6.0",
+        "weitzman/drupal-test-traits": "^1.5"
     },
     "conflict": {
         "drupal/drupal": "*"

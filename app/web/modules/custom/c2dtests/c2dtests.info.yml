@@ -1,0 +1,5 @@
+name: C2D tests
+description: 'C2D automate tests.'
+type: module
+package: C2D
+core_version_requirement: ^8 || ^9
