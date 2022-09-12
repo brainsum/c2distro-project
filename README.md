@@ -11,6 +11,7 @@ This template was based on the following:
 ## Installation
 
 Note: These commands have been tested on linux (ubuntu), they might need changes to work on other systems.
+Note: In the host needs to be composer and min requirement for docker-compose version is 1.27.4.
 
 ### Native composer
 
@@ -43,6 +44,7 @@ For starting and stopping the environment you can use the helper scripts provide
 
 ### Drush
 
+To be able to make a db backup:
 Copy `app/drush/local/example.drush.yml` as `app/drush/local/drush.yml`. Update its contents as required.
 
 ### Filesystem permission fixes
