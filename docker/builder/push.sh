@@ -19,7 +19,7 @@ LATEST_TAG="${REPOSITORY}:latest"
 echo "Pushing image: ${BUILD_TAG} / ${LATEST_TAG}"
 
 docker push "${BUILD_TAG}"
-docker push "${LATEST_TAG_TAG}"
+docker push "${LATEST_TAG}"
 
 
 
@@ -28,6 +28,6 @@ BUILD_TAG="${REPOSITORY}:${NODE_IMAGE_TAG}"
 LATEST_TAG="${REPOSITORY}:latest"
 
 docker push "${BUILD_TAG}"
-docker push "${LATEST_TAG_TAG}"
+docker push "${LATEST_TAG}"
 
 echo "Pushing image: ${BUILD_TAG} / ${LATEST_TAG}"
