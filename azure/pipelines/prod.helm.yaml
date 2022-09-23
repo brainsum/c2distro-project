@@ -1,0 +1,54 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - prod
+  paths:
+    include:
+      - helm
+      - azure/pipelines/prod.helm.yaml
+
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: "prod_app_image"
+      source: "App Image (Prod)"
+      trigger:
+        branches:
+          include:
+            - prod
+  repositories:
+    - repository: self
+
+variables:
+  - template: templates/variables/common.yaml
+
+stages:
+  - stage: create_artifact
+    displayName: 'Create artifact'
+    jobs:
+      - job: publish_generic_artifact
+        displayName: Publish a generic artifact
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Bash@3
+            name: prepare_generic_build_artifact
+            displayName: Prepare generic artifact
+            inputs:
+              targetType: 'inline'
+              script: |
+                cd "${SOURCE_DIR}/helm"
+                find values -maxdepth 2 -name '*.yaml' -exec cp --parents {} "${TARGET_DIR}" \;
+            env:
+              SOURCE_DIR: $(Build.SourcesDirectory)
+              TARGET_DIR: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            name: publish_generic_build_artifact
+            displayName: Publish generic artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'generic_build_artifact'
+              publishLocation: 'Container'
+
