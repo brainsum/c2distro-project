@@ -8,3 +8,7 @@ variables:
     value: '$(Build.SourceBranchName)-$(Build.BuildId)'
   - name: latestTag
     value: '$(Build.SourceBranchName)-latest'
+  - name: containerRegistry
+    value: ifrcprdkubcr.azurecr.io
+  - name: dockerRegistryServiceConnection
+    value: IFRCPRDKUBCR
