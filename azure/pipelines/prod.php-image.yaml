@@ -11,9 +11,6 @@ trigger:
   branches:
     include:
       - prod
-  tags:
-    include:
-      - Release-*
   paths:
     include:
       - docker/php
