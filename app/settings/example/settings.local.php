@@ -55,3 +55,6 @@ $settings['config_exclude_modules'] = [
 
 // @todo: Maybe move to web/sites/default/settings.php for a unified setup.
 $settings['php_storage']['twig']['directory'] = '/tmp/drupal-storage/php';
+
+// Automated tests.
+$settings['trusted_host_patterns'][] = '^nginx';

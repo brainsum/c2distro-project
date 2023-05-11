@@ -57,6 +57,11 @@ services:
     #      SIMPLETEST_BASE_URL: "http://nginx"
     #      SIMPLETEST_DB: "mysql://drupal:drupal@mariadb/drupal#tests_"
     #      MINK_DRIVER_ARGS_WEBDRIVER: '["chrome", {"browserName":"chrome","goog:chromeOptions":{"args":["--disable-gpu","--headless"]}}, "http://chrome:9515"]'
+      ## PHPUnit - Drupal Test Traits configurations
+      DTT_BASE_URL: http://nginx/
+      DTT_API_URL: http://chrome:9222
+      BROWSERTEST_OUTPUT_BASE_URL: ${BROWSERTEST_OUTPUT_BASE_URL}
+      DTT_MINK_DRIVER_ARGS: '["chrome", {"browserName":"chrome","chromeOptions":{"args":["--disable-gpu","--headless","--no-sandbox","--disable-dev-shm-usage"]}}, "http://chrome:9515"]'
     volumes:
       - ./app:/var/www/html
   ## For macOS users (https://wodby.com/docs/stacks/drupal/local#docker-for-mac)
@@ -86,6 +91,17 @@ services:
     #      - docker-sync:/var/www/html # Docker-sync
     labels:
       - "traefik.http.routers.${PROJECT_NAME}_nginx.rule=Host(`${PROJECT_BASE_URL}`)"
+
+  # See https://github.com/SeleniumHQ/docker-selenium/tree/master/StandaloneChrome
+  selenium:
+    # from 4.6.0-20221104 getting 'non-positive contentLength: 0'
+    # See https://github.com/SeleniumHQ/docker-selenium/issues/1723
+    image: selenium/standalone-chrome:4.5.3-20221024
+    ports:
+      - "${SELENIUM2DRIVER_PORT-4444}:4444"
+    shm_size: '1gb'
+    volumes:
+      - ./:/var/www/html
 
   mailhog:
     image: mailhog/mailhog

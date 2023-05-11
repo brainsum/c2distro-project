@@ -13,3 +13,6 @@ vendor
 docker-compose.local.yml
 
 /composer.lock
+
+# Ignore phpunit result cache
+app/.phpunit.result.cache

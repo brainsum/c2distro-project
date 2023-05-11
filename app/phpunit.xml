@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/weitzman/drupal-test-traits/src/bootstrap-fast.php"
+         colors="true"
+         verbose="true"
+         printerClass="\Drupal\Tests\Listeners\HtmlOutputPrinter">
+  <php>
+        <!-- <env name="DTT_BASE_URL" value="http://nginx"/>
+        <env name="DTT_API_URL" value="http://chrome:9222"/>
+        <env name="DTT_MINK_DRIVER_ARGS" value='["chrome", { "chromeOptions" : { "w3c": false } }, "http://localhost:4444/wd/hub"]'/>-->
+<!--        <env name="DTT_MINK_DRIVER_ARGS" value='["firefox", null, "http://localhost:4444/wd/hub"]'/>-->
+        <env name="DTT_API_OPTIONS" value='{"socketTimeout": 360, "domWaitTimeout": 3600000}' />
+        <!-- To disable deprecation testing completely. -->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+        <!-- Example BROWSERTEST_OUTPUT_DIRECTORY value: /tmp
+               Specify a temporary directory for storing debug images and html documents.
+               These artifacts get copied to /sites/simpletest/browser_output by BrowserTestBase. -->
+        <env name="BROWSERTEST_OUTPUT_DIRECTORY" value="/tmp"/>
+        <!-- define base URL to be able to open from cli phpunit report; added from .env as php docker image environment -->
+        <!-- <env name="BROWSERTEST_OUTPUT_BASE_URL" value="http://c2distrop.docker.localhost:8000/"/> -->
+        <!-- Specify the default directory screenshots should be placed. -->
+        <env name="DTT_SCREENSHOT_REPORT_DIRECTORY" value="sites/simpletest/screenshots"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="unit">
+          <directory>./web/modules/custom/*/tests/src/Unit</directory>
+        </testsuite>
+        <testsuite name="kernel">
+          <directory>./web/modules/custom/*/tests/src/Kernel</directory>
+        </testsuite>
+        <testsuite name="existing-site">
+          <directory>tests/src/ExistingSite</directory>
+        </testsuite>
+        <testsuite name="existing-site-javascript">
+          <directory>tests/src/ExistingSiteJavascript</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
