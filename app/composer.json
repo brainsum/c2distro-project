@@ -117,11 +117,6 @@
         "installer-types": [
             "bower-asset",
             "npm-asset"
-        ],
-        "patches": {
-            "drupal/exception_mailer": {
-                "Logger function not compatible with core Log function": "https://www.drupal.org/files/issues/2023-04-03/3351812.patch"
-            }
-        }
+        ]
     }
 }
