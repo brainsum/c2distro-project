@@ -12,7 +12,7 @@
         "drupal/classy": "^1.0",
         "drupal/core-composer-scaffold": "^10.0.0",
         "drupal/core-recommended": "^10.0.0",
-        "drupal/exception_mailer": "dev-4.0.x",
+        "drupal/exception_mailer": "^4.0",
         "drupal/maillog": "^1.0.0",
         "drupal/openid_connect": "^3.0@alpha",
         "drush/drush": "^11.4.0",
