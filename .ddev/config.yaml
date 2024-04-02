@@ -12,7 +12,8 @@ database:
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
-nodejs_version: "14"
+nodejs_version: "16"
+timezone: Europe/Budapest
 
 # Key features of DDEV's config.yaml:
 
