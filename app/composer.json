@@ -13,7 +13,7 @@
         "drupal/core-composer-scaffold": "^10.3",
         "drupal/core-recommended": "^10.3",
         "drupal/exception_mailer": "^4.0",
-        "drupal/maillog": "^1.0.0",
+        "drupal/maillog": "^1.1",
         "drupal/openid_connect": "^3.0@alpha",
         "drush/drush": "^12.4.3",
         "mglaman/composer-drupal-lenient": "^1.0",
