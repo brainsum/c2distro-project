@@ -22,7 +22,7 @@
         "webflo/drupal-finder": "^1.3"
     },
     "require-dev": {
-        "brainsum/drupal-dev-tools": "^4.0",
+        "brainsum/drupal-dev-tools": "^5.0.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
         "drupal/core-dev": "^10.3",
         "drupal/devel_entity_updates": "^4.1",
