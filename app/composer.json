@@ -122,7 +122,6 @@
             "bower-asset",
             "npm-asset"
         ],
-        ],
         "patchLevel": {
             "drupal/core": "-p2"
         },
