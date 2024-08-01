@@ -25,6 +25,6 @@ fi
 
 echo "Using compose files: ${COMPOSE_FILES}"
 
-docker-compose ${COMPOSE_FILES} up -d --force-recreate || exit 1
-docker-compose ${COMPOSE_FILES} ps || exit 1
-docker-compose ${COMPOSE_FILES} exec php bash || exit 1
+docker compose ${COMPOSE_FILES} up -d --force-recreate || exit 1
+docker compose ${COMPOSE_FILES} ps || exit 1
+docker compose ${COMPOSE_FILES} exec php bash || exit 1
