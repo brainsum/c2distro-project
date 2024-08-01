@@ -25,8 +25,6 @@
         "brainsum/drupal-dev-tools": "^5.0.0",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
         "drupal/core-dev": "^10.3",
-        "drupal/devel_entity_updates": "^4.1",
-        "drupal/devel_php": "^1.3.0",
         "weitzman/drupal-test-traits": "^2.2",
         "weitzman/logintrait": "^1.2"
     },
