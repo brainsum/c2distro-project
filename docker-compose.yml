@@ -1,8 +1,6 @@
 # Development env for the projects.
 ## @see: https://github.com/wodby/docker4drupal
 
-version: "3.8"
-
 services:
   db:
     container_name: "${PROJECT_NAME}_db"
