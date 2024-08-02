@@ -6,6 +6,7 @@
  */
 
 $settings['container_yamls'][] = __DIR__ . '/services.monolog.yml';
+$settings['container_yamls'][] = __DIR__ . '/services.session.yml';
 $settings['container_yamls'][] = __DIR__ . '/services.local.yml';
 
 if (file_exists(__DIR__ . '/settings.cache.php')) {
