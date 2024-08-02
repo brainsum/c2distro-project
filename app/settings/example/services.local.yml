@@ -5,6 +5,7 @@ parameters:
     gc_divisor: 100
     gc_maxlifetime: 200000
     cookie_lifetime: 2000000
+    cookie_samesite: Lax
   # For local development.
   twig.config:
     debug: true

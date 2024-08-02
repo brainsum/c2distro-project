@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:ignoreFile
+
 /**
  * @file
  * Drupal site-specific configuration file.
@@ -45,6 +47,9 @@ $databases['default']['default'] = [
   'namespace' => 'Drupal\Core\Database\Driver\mysql',
   'driver' => 'mysql',
   'pdo' => [],
+  'init_commands' => [
+    'isolation_level' => 'SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED',
+  ],
 ];
 
 if ($dbCaPath = getenv('DRUPAL_DATABASE_SSL_CA_PATH')) {
@@ -60,3 +65,7 @@ $settings['php_storage']['twig']['directory'] = '/tmp/drupal-storage/php';
 if (file_exists(__DIR__ . '/../../../settings/settings.local.php')) {
   include_once __DIR__ . '/../../../settings/settings.local.php';
 }
+
+$settings['migrate_node_migrate_type_classic'] = FALSE;
+
+$settings['state_cache'] = TRUE;
