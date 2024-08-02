@@ -7,7 +7,7 @@ variables:
   - name: nodeVersion
     value: '14.16.0'
   - name: composerVersion
-    value: '2.1.5'
+    value: '2.7.7'
   - name: nodeImageRepository
     value: 'c2/node'
   - name: builderContextPath
