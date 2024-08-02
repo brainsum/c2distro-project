@@ -77,7 +77,7 @@ services:
       NGINX_ERROR_LOG_LEVEL: debug
       NGINX_BACKEND_HOST: php
       NGINX_SERVER_ROOT: /var/www/html/web
-      NGINX_VHOST_PRESET: drupal9
+      NGINX_VHOST_PRESET: drupal10
       ## Custom
       NGINX_CLIENT_MAX_BODY_SIZE: "500m"
       ##
