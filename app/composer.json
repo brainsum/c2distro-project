@@ -38,6 +38,19 @@
         "asset-packagist": {
             "type": "composer",
             "url": "https://asset-packagist.org"
+        },
+        "lightgallery": {
+            "type": "package",
+            "package": {
+                "name": "sachinchoolur/lightgallery",
+                "type": "drupal-library",
+                "version": "1.10.0",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/sachinchoolur/lightGallery",
+                    "reference": "1.10.0"
+                }
+            }
         }
     },
     "minimum-stability": "dev",
