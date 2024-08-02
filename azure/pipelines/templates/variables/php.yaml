@@ -4,7 +4,7 @@ variables:
     value: 'library/php'
     # @todo: experiment with 8.0.8
   - name: phpBaseTag
-    value: '7.4.21-fpm-buster'
+    value: '8.1-fpm-buste'
   - name: phpImageRepository
     value: 'c2/php'
   - name: phpContextPath

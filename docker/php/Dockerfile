@@ -37,12 +37,12 @@ RUN set -eux \
         libmagickwand-dev \
     && docker-php-source extract \
     && pecl install \
-        uploadprogress-1.1.3 \
-        apcu-5.1.20 \
-        igbinary-3.2.2 \
-        imagick-3.4.4 \
+        uploadprogress-2.0.2 \
+        apcu-5.1.21 \
+        igbinary-3.2.7 \
+        imagick-3.7.0 \
     && pecl bundle -d /usr/src/php/ext \
-        redis-5.3.4 \
+        redis-5.3.7 \
     && docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
