@@ -76,6 +76,13 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
+RUN \
+    curl "https://getcomposer.org/download/2.7.7/composer.phar" \
+         -L \
+         -o /usr/local/bin/composer \
+    && chmod +x /usr/local/bin/composer \
+    && chown "${USER_NAME}:${USER_NAME}" /usr/local/bin/ /usr/local/bin/composer
+
 COPY --chmod=0555 fpm/php-fpm-healthcheck /usr/local/bin/php-fpm-healthcheck
 COPY config/ /usr/local/etc/php/
 COPY fpm/zzz-fpm.conf /usr/local/etc/php-fpm.d/zzz-fpm.conf
