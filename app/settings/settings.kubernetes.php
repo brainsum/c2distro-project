@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:ignoreFile
+
 /**
  * @file
  * This file is built into the docker images as settings.local.php.
